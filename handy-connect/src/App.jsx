@@ -12,40 +12,40 @@ import {
 export default function Home() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [authMode, setAuthMode] = useState<'login' | 'signup' | 'forgot'>('login');
-  const [userRole, setUserRole] = useState<'client' | 'pro'>('client');
+  const [authMode, setAuthMode] = useState('login');
+  const [userRole, setUserRole] = useState('client');
   const [darkMode, setDarkMode] = useState(false);
   
-  const [activeView, setActiveView] = useState<'main' | 'messages' | 'profile' | 'review-bids'>('main');
-  const [profileTab, setProfileTab] = useState<'info' | 'history'>('info');
+  const [activeView, setActiveView] = useState('main');
+  const [profileTab, setProfileTab] = useState('info');
 
   // Job Detail State
-  const [selectedJobDetail, setSelectedJobDetail] = useState<any>(null);
+  const [selectedJobDetail, setSelectedJobDetail] = useState(null);
 
   // State for Bid Submission (Pro View)
-  const [selectedLead, setSelectedLead] = useState<any>(null);
+  const [selectedLead, setSelectedLead] = useState(null);
   const [isBidModalOpen, setIsBidModalOpen] = useState(false);
 
   // State for Job Posting (Client View)
   const [isPostJobOpen, setIsPostJobOpen] = useState(false);
 
   // State for Reviewing Bids (Client View)
-  const [selectedBid, setSelectedBid] = useState<any>(null);
+  const [selectedBid, setSelectedBid] = useState(null);
 
   // NEW: State for Leaving a Review
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-  const [reviewingJob, setReviewingJob] = useState<any>(null);
+  const [reviewingJob, setReviewingJob] = useState(null);
   const [ratingScore, setRatingScore] = useState(0);
 
   // Incoming Bids with Expiry logic
-  const [incomingBids, setIncomingBids] = useState<any[]>([
+  const [incomingBids, setIncomingBids] = useState([
     { id: 501, proName: "David Miller", proImg: "https://i.pravatar.cc/150?u=11", amount: "$140", message: "I can be there in 20 minutes. I have all the tools needed for a quick pipe fix.", rating: 4.9, jobTitle: "Kitchen Pipe Leak", createdAt: Date.now() },
-    { id: 502, proName: "Sarah Jenkins", proImg: "https://i.pravatar.cc/150?u=12", amount: "$380", message: "I specialize in residential rewiring. Can start tomorrow morning.", rating: 4.8, jobTitle: "Rewire Living Room", createdAt: Date.now() - (47 * 60 * 60 * 1000) }, // 47 hours ago
+    { id: 502, proName: "Sarah Jenkins", proImg: "https://i.pravatar.cc/150?u=12", amount: "$380", message: "I specialize in residential rewiring. Can start tomorrow morning.", rating: 4.8, jobTitle: "Rewire Living Room", createdAt: Date.now() - (47 * 60 * 60 * 1000) }, 
   ]);
 
   // Messaging States
-  const [activeChat, setActiveChat] = useState<any>(null);
-  const [chats, setChats] = useState<any[]>([]);
+  const [activeChat, setActiveChat] = useState(null);
+  const [chats, setChats] = useState([]);
   const [msgInput, setMsgInput] = useState("");
 
   // Profile Management State
@@ -68,9 +68,9 @@ export default function Home() {
   }, []);
 
   // LOGIC: Pro Submitting a Bid
-  const handlePlaceBid = (e: React.FormEvent) => {
+  const handlePlaceBid = (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
+    const formData = new FormData(e.target);
     const newBid = {
       id: Math.random(),
       proName: profileData.name,
@@ -87,15 +87,15 @@ export default function Home() {
   };
 
   // LOGIC: Client Posting a Job
-  const handlePostJob = (e: React.FormEvent) => {
+  const handlePostJob = (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
+    const formData = new FormData(e.target);
     alert(`Job "${formData.get('title')}" has been posted to the network!`);
     setIsPostJobOpen(false);
   };
 
   // NEW LOGIC: Submitting Feedback
-  const handleSubmitReview = (e: React.FormEvent) => {
+  const handleSubmitReview = (e) => {
     e.preventDefault();
     alert(`Thank you! You rated ${reviewingJob.pro} ${ratingScore} stars.`);
     setIsReviewModalOpen(false);
@@ -104,13 +104,13 @@ export default function Home() {
   };
 
   // LOGIC: Decline Bid
-  const handleDeclineBid = (bidId: number) => {
+  const handleDeclineBid = (bidId) => {
     setIncomingBids(prev => prev.filter(b => b.id !== bidId));
     setSelectedBid(null);
   };
 
   // LOGIC: Accept Bid and Open Chat
-  const handleHirePro = (bid: any) => {
+  const handleHirePro = (bid) => {
     const newChat = {
       id: bid.id,
       name: bid.proName,
@@ -317,7 +317,7 @@ export default function Home() {
                       onClick={() => setActiveChat(chat)}
                       className={`p-5 flex gap-4 cursor-pointer transition-all border-b ${activeChat?.id === chat.id ? 'bg-orange-500/5 border-r-4 border-orange-500' : 'hover:bg-slate-50'}`}
                     >
-                      <img src={chat.img} className="w-12 h-12 rounded-2xl" />
+                      <img src={chat.img} className="w-12 h-12 rounded-2xl" alt="" />
                       <div className="overflow-hidden">
                         <p className="font-black truncate">{chat.name}</p>
                         <p className="text-[10px] uppercase font-bold text-orange-500">{chat.job}</p>
@@ -331,14 +331,14 @@ export default function Home() {
               {activeChat ? (
                 <>
                   <div className="p-6 border-b-2 flex items-center gap-4">
-                     <img src={activeChat.img} className="w-10 h-10 rounded-xl" />
+                     <img src={activeChat.img} className="w-10 h-10 rounded-xl" alt="" />
                      <div>
                        <p className="font-black leading-none">{activeChat.name}</p>
                        <span className="text-[10px] font-bold opacity-50 uppercase">Online</span>
                      </div>
                   </div>
                   <div className="flex-1 p-6 overflow-y-auto space-y-4 bg-slate-50/50 dark:bg-slate-900/20">
-                    {activeChat.messages.map((m: any, i: number) => (
+                    {activeChat.messages.map((m, i) => (
                       <div key={i} className={`flex ${m.sender === 'system' ? 'justify-center' : m.sender === 'client' ? 'justify-end' : 'justify-start'}`}>
                         <div className={`max-w-[80%] p-4 rounded-2xl font-bold text-sm ${
                           m.sender === 'system' ? 'bg-slate-200/50 text-[10px] uppercase tracking-wider' :
@@ -541,7 +541,7 @@ export default function Home() {
                   {pros.map(pro => (
                     <div key={pro.id} className={`${cardBg} border-2 rounded-[35px] p-6 hover:shadow-xl hover:border-orange-500/30 transition-all group`}>
                       <div className="flex gap-4 mb-6">
-                        <img src={pro.img} className="w-16 h-16 rounded-2xl object-cover" />
+                        <img src={pro.img} className="w-16 h-16 rounded-2xl object-cover" alt="" />
                         <div>
                           <h4 className="font-black text-lg">{pro.name}</h4>
                           <p className="text-orange-500 font-bold text-sm">{pro.skill}</p>
@@ -568,7 +568,7 @@ export default function Home() {
                   {incomingBids.map(bid => (
                     <div key={bid.id} className={`${cardBg} border-2 p-6 rounded-[35px] flex flex-col md:flex-row justify-between items-start md:items-center hover:border-orange-500 transition-all shadow-sm`}>
                       <div className="flex gap-4 items-center">
-                        <img src={bid.proImg} className="w-14 h-14 rounded-2xl object-cover" />
+                        <img src={bid.proImg} className="w-14 h-14 rounded-2xl object-cover" alt="" />
                         <div>
                           <p className="text-xs font-bold text-orange-500 uppercase">{bid.jobTitle}</p>
                           <h4 className="font-black text-xl">{bid.proName}</h4>
@@ -645,7 +645,7 @@ export default function Home() {
         )}
       </main>
 
-      {/* NEW: Leave a Review Modal */}
+      {/* Leave a Review Modal */}
       {isReviewModalOpen && reviewingJob && (
         <div className="fixed inset-0 z-[120] flex items-center justify-center px-4">
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsReviewModalOpen(false)}></div>
@@ -821,7 +821,7 @@ export default function Home() {
           <div className={`${cardBg} border w-full max-w-2xl rounded-[40px] shadow-2xl relative z-10 p-10 animate-in zoom-in duration-300`}>
             <div className="flex justify-between items-start mb-8">
                <div className="flex gap-6 items-center">
-                 <img src={selectedBid.proImg} className="w-20 h-20 rounded-3xl object-cover" />
+                 <img src={selectedBid.proImg} className="w-20 h-20 rounded-3xl object-cover" alt="" />
                  <div>
                     <h3 className="text-3xl font-black">{selectedBid.proName}</h3>
                     <div className="flex items-center gap-2 text-yellow-500 font-black">
